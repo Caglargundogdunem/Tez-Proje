@@ -1,0 +1,201 @@
+#include <IRremote.h>                       // Kızılötesi Kumanda kütüphanesi
+#include <Adafruit_NeoPixel.h>              // NeoPixel Kütüphanesi
+//#include <LiquidCrystal.h>                // LCD ekran Kütüphanesi
+#include <SD.h>                             // SD Kart Kütüphanesi
+
+//LiquidCrystal lcd(14,15,16,17,18,19);      // LCD bağlantı pinleri Analog pinleri Digital olarak kullanılabilmesini sağlayan komut.
+   /*
+   19 d7
+   18 d6
+   17 d5
+   16 d4
+   15 E
+   14 RS
+   VO Pot Orta
+   RW GND
+   */
+   
+#define PIN1 7                                // 1. Şerit Led Bağlantı Pini
+#define PIN2 2       
+#define PIN3 8                                // 6V
+#define PIN4 10
+//#define PIN5 6
+
+                            
+#define NUMPIXELS1 70                         // 1. şerit led sayısı (mavi) 70 led
+#define NUMPIXELS2 50                         // 2. şerit led sayısı (kırmızı/turuncu) 50 led
+#define NUMPIXELS3 30                         // 3. şerit led sayısı (mavi/beyaz) 30 led
+#define NUMPIXELS4 50                         // 4. şerit led sayısı 50 led
+//#define NUMPIXELS5 44
+
+#define SD_ChipSelectPin 4                    // SD Kartın bağlı olduğu Pin
+
+#include <TMRpcm.h>                         // SD karttan okuma yapması için gereken Kütüphane
+TMRpcm tmrpcm;
+
+
+
+int RECV_PIN = 3;                             // Kızılötesi Alıcının Bağlı Olduğu Pin
+
+IRrecv irrecv(RECV_PIN); 
+decode_results results;
+
+ 
+Adafruit_NeoPixel NeoPixel1 = Adafruit_NeoPixel(NUMPIXELS1, PIN1, NEO_GRB + NEO_KHZ800);    // 1.Şerit Led Tanımlaması
+Adafruit_NeoPixel NeoPixel2 = Adafruit_NeoPixel(NUMPIXELS2, PIN2, NEO_GRB + NEO_KHZ800);    // 2.Şerit Led Tanımlaması
+Adafruit_NeoPixel NeoPixel3 = Adafruit_NeoPixel(NUMPIXELS3, PIN3, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel NeoPixel4 = Adafruit_NeoPixel(NUMPIXELS4, PIN4, NEO_GRB + NEO_KHZ800);
+//Adafruit_NeoPixel NeoPixel5 = Adafruit_NeoPixel(NUMPIXELS5, PIN5, NEO_GRB + NEO_KHZ800);
+
+
+#define BUTON0 16738455 // 0xFF6897 Reactor vessel Kırmızı(turuncu(sarı) karışımı başlangıç)(ses tanıtım) // Pressurizer Sarı Turuncu (ses tanıtım)
+#define BUTON1 16724175 // 0xFF30CF Steam Generator (Mavi) (ses tanıtım) // Turbine (Açık Mavi) (ses tanıtım) // Generator (Sarı/Beyaz)(ses tanıtım)
+#define BUTON2 16718055 // Condenser (Açık Mavi - Mavi) (ses tanıtım) // Soğutucu Pompa (Açık Mavi - Mavi) (ses tanıtım)
+#define BUTON3 16743045 // Elektrik Teller (Sarı/Beyaz)
+#define BUTON4 16716015 // Evler (Magenta ile sürekli yanacak, tüm sistem tamamlanmış olacak)
+#define BUTON5 16726215 // Kontrol Çubuğu (ses tanıtım)
+#define BUTON6 16734885 //
+#define BUTON7 16728765 // 
+#define BUTON8 16730805 // 
+#define BUTON9 16732845 // 
+
+void setup() {  
+                                              // LCD Ekranda Sabit Kalacak Yazı
+//lcd.begin(16, 2);                           // LCD ekran ölçü alanı tanımlaması
+//lcd.print("CAGLAR  GUNDOGDU");              // İlk satıra yazılacak kelimeler
+//lcd.setCursor(0,1);                         // 2.satıra yazılması için 
+//
+
+//lcd.print(" Sinop Uni. NEM");               // 2.satıra yazılacak kelimeler
+ 
+  irrecv.enableIRIn();
+  tmrpcm.speakerPin = 9;                    // Hoparlör Çıkış Pini / Amfi ile desteklenmiştir, aksi takdirde istenilen sesi duyma şansı olmayacaktır. 
+
+  NeoPixel1.begin();                        // 1.şerit ledin başlatılması için 
+  NeoPixel1.show();
+  NeoPixel2.begin();
+  NeoPixel2.show();                         // 2.şerit ledin başlatılması için 
+  NeoPixel3.begin();
+  NeoPixel3.show(); 
+  NeoPixel4.begin();
+  NeoPixel4.show(); 
+ // NeoPixel5.begin();
+ // NeoPixel5.show(); 
+  
+  if (!SD.begin(SD_ChipSelectPin))          // SD Karttan gelen bilgileri okuyor.
+{
+  return;
+
+}
+
+tmrpcm.volume(5);
+}
+  
+ 
+void loop() {
+
+  if (irrecv.decode(&results))                        // Kızıl ötesinden sinyal kontrolü gerçekleştirildi.
+  
+
+    {        
+        if (results.value == BUTON2)                  // Eğer 2 tuşundan gelen sinyal varsa bağlı olduğu ledler yanacaktır
+{
+        
+                                                      // ilgili ses dosyasını çalmaya başlayacak.
+                                                      // ses dosyası .wav formatında ve SD Kart içerisine atılan dosya adı burada yazan ile aynı olmak zorundadır.
+                                                     // https://audio.online-convert.com/convert-to-wav  bu adresten mp3 formatındaki ses
+                                                     // dosyası wav formatına çevirildi. Altta yazan ayarlar ses dosyasının düzenlenmesini sağlayacaktır.
+                                                     // 8 Bit / 32000 Hz  / stereo 
+       
+    for (int i = 0; i <3; i++)                        //Alttaki döngüyü .... defa tekrarlayacak.
+  
+           {
+            for(int j = 0; j <= 70; j++)              
+            {
+                //if(j <= 9)
+              { 
+                if(j%5==0)
+           
+        NeoPixel1.setPixelColor(j,NeoPixel1.Color(0,55,255));    // 1. şerit led için ( Red, Green, Blue) gerekli renk tanımaları
+        NeoPixel1.setPixelColor(j,NeoPixel1.Color(0,0,50)); 
+NeoPixel1.show();
+delay(50);
+        NeoPixel1.setPixelColor(j,NeoPixel1.Color(0,0,50));
+        NeoPixel1.setPixelColor(j,NeoPixel1.Color(0,55,255));
+NeoPixel1.show();
+delay(50);
+              }
+            }
+            
+           }
+}
+
+           
+
+    
+
+         if (results.value == BUTON0)              
+          {
+         
+
+  
+          for (int i = 0; i < 8; i++)
+          
+           {
+            for(int j = 0; j <= 50; j++)               
+            {
+               // if(j <= 9)
+             { 
+                if(j%5==0)
+        NeoPixel2.setPixelColor(j,NeoPixel2.Color(250,55,0));
+        NeoPixel2.setPixelColor(j,NeoPixel2.Color(55,0,0)); 
+NeoPixel2.show();
+delay(50);
+        NeoPixel2.setPixelColor(j,NeoPixel2.Color(55,0,0));
+        NeoPixel2.setPixelColor(j,NeoPixel2.Color(250,50,0));
+NeoPixel2.show();
+delay(50);
+             }
+            }
+        
+
+            }
+           }
+
+           
+           
+         
+           if (results.value == BUTON1)              // 1 tuşuna basınca mavi yanacaktır. (arkadan gelenler devam edecek)
+          {
+          
+          
+                   
+          for (int i = 0; i < 13; i++)
+          
+           {
+            for(int j = 0; j <= 30; j++)      
+              { 
+      // if(j <= 9)
+                { 
+                if(j%5==0)
+        NeoPixel3.setPixelColor(j,NeoPixel3.Color(0,0,150));
+        NeoPixel3.setPixelColor(j,NeoPixel3.Color(0,0,55)); 
+NeoPixel3.show();
+delay(50);
+        NeoPixel3.setPixelColor(j,NeoPixel3.Color(0,0,55));
+        NeoPixel3.setPixelColor(j,NeoPixel3.Color(0,0,150));
+NeoPixel3.show();
+delay(50);
+          }
+          }
+          }
+          }
+          
+         
+       irrecv.resume();
+  
+
+
+
+}
+}
