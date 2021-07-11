@@ -1,0 +1,42 @@
+#include <LiquidCrystal.h> // lcd ekran kütüphanesi
+#include <SimpleSDAudio.h>
+
+const int RS = 14;           // pin tanımlamalarını yazıldı.
+const int EN = 15;
+const int d4 = 16;
+const int d5 = 17;
+const int d6 = 18;
+const int d7 = 19;
+const int pin_BL = 10; // Arka plan ışık ayarını yapıyoruz.
+
+LiquidCrystal lcd( RS,  EN,  d4,  d5,  d6,  d7);  // pinler lcd olarak tanımlandı.
+
+byte customChar[8] = {    //derece sembolünü oluşturuldu. bknz. http://omerk.github.io/lcdchargen/
+0b00110,
+0b01001,
+0b01001,
+0b00110,
+0b00000,
+0b00000,
+0b00000,
+0b00000
+};
+
+void setup() 
+
+{
+  lcd.createChar(0, customChar); // derece karakterini okuyor.
+  lcd.begin(16,2);  // satır ve sütun ayarını yapıldı.
+  lcd.print("PWR Sistem Sicakligi 275C"); //ilk satıra yazılacak metin yazıldı.
+  lcd.write((uint8_t)0); //ilk satır sonuna derece sembolü eklendi.
+  lcd.setCursor(0,1); //ikinci satıra geçmesini sağlandı.
+  lcd.print("PWR Sistem Basinci   15MPa "); //ikinci satıra yazılacak metinler yazıldı.
+ 
+}
+ 
+void loop()
+{
+  
+ lcd.scrollDisplayLeft(); // yazının sürekli sola kaymasını sağlamaktadır.
+ delay (500); // her 500 milisaniye de sola kaydırmasını sağlamaktadır.
+}
