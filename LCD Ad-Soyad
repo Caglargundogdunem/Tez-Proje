@@ -1,0 +1,28 @@
+#include <LiquidCrystalTr.h> // lcd ekran kütüphanesi
+
+
+const int RS = 14;           // pin tanımlamalarını yazıldı.
+const int EN = 15;
+const int d4 = 16;
+const int d5 = 17;
+const int d6 = 18;
+const int d7 = 19;
+const int pin_BL = 10; // Arka plan ışık ayarını yapıldı.
+
+LiquidCrystal lcd( RS,  EN,  d4,  d5,  d6,  d7);  // pinler lcd olarak tanımlandı.
+
+
+void setup() 
+
+{
+ 
+  lcd.begin(16,2);  // satır ve sütun ayarı yapıldı.
+  lcd.print("ÇAĞLAR GÜNDOĞDU"); //ilk satıra yazılacak metinler yazıldı
+  lcd.setCursor(0,1); //ikinci satıra geçmesi gerçekleştirildi.
+  lcd.print("SİNOP UNİ. NEM."); //ikinci satırı yazılacak metinler yazıldı.
+ 
+}
+ 
+void loop()
+{
+  
