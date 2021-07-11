@@ -1,0 +1,22 @@
+# caglarothesis
+Tezde arduinoda hazırladığım kodlar bulunmaktadır. 
+Tezde basınçlı su reaktörünün reaktör bileşenleriyle alakalı bir çalışma gerçekleştirilmiştir.
+Adreslenebilir rgb şerit ledlerle birlikte reaktör içindeki akış aktarılmaya çalışılmıştır.
+Ledler akarken aynı anda aktığı bölümde bulunan reaktör bileşenlerinin kısa bir tanımı sesli bir şekilde amfiden gelmektedir
+Ses ve ledlerin çalışması için 2 tane IR sensörü kullanılmış olup sistem kumandayla çalıştırılmaktadır.
+6 farklı butonda tanımlanmıştır. Bu butonların 5 inde hem ses hem de ledlerin yanmasını sağlayan bir loop yazılırken, 1 tuşta sadece ses çalması için tanımlanmıştır.
+Tanımlanan 2 LCD ekran kodu bulunmaktadır. Bunlardan biri PWR sistem sıcaklığı ve basıncını göstermektedir. Bu yazıları gösterirken sürekli yana doğru kaymaktadır.
+2. LCD kodunda ise projeyi düzenleyen kişinin adı, soyadı, okulu ve bölümü yazmaktadır. Bu LCD ekranında yazılar sabit olarak kalmaktadır.
+Tezde kullanılan ledler 5 V outputa sahiptir. Sesleri çalıştırmak için kullandığım modül 3.3 V 'dur. Sistemde kullanılan ses kayıtları wav cinsindedir.
+Bu ses kayıtları 8 bit, 16000 Hz mono ses biçimindedir. 
+Ledlerin döngüyü tamamlama sayısı, ses kayıtlarının uzunluğuyla eş değerlikte gitmektedir.
+Buton 0 tuşunun çalıştırdığı kısım reaktör kabı ve basınçlandırıcıdır. Buton 1'de reaktör korundan ledler kaymaya başlarken aynı anda sesli metin de çalmaya başlar.
+Buton 1 tuşunun çalıştırdığı kısım buhar jeneratörü, türbin ve elekrik jeneratörüdür. Buton 1 'de buhar jeneratörüyle birlikte ışıkların kayması başlarken aynı anda
+sesli metin de çalmaya başlamaktadır. 
+Buton 2 tuşunun çalıştırdığı kısım yoğuşturucu ve reaktör soğutucu pompasıdır. Buton 2' de NSSS sisteminde kullanılan 2. çevrimdeki suyun akışı gösterilirmektedir. Gelen
+su yoğuşturucudan geçerek türbinlere geri dönmektedir.
+Buton 3 tuşunun çalıştırdığı kısım türbinlerden üretilen elektrik enerjisinin şehirlere iletilmesinde görevli olan elektrik direklerine akışı göstermektedir. Bu kısımdaki 
+ledlerin renki açık sarıya yakın bir renktedir.
+Buton 4 tuşunun çalıştırdığı kısım elektrik direklerine gelen elektriğin evlere dağıtıldığını gösteren bir akıştır. Evlere gelen ışığın rengi magentadır. 
+Buton 5 tuşunun çalıştırdığı kısım kontrol çubukları sesli metnidir. 
+Projede bulunan LCD ekranları potansiyometrelerle kapatılıp açılabilir yada elektriğe bağlanmadan da kapatılabilmektedir. 
