@@ -1,0 +1,187 @@
+#include <IRremote.h>                       // Kızılötesi Kumanda kütüphanesi
+#include <Adafruit_NeoPixel.h>              // NeoPixel Kütüphanesi
+#include <SD.h>                             // SD Kart Kütüphanesi
+
+   
+#define PIN1 7                               // 1. Şerit Led Bağlantı Pini
+#define PIN2 6                               // 2. Şerit Led Bağlantı Pini
+
+
+
+                            
+#define NUMPIXELS1 70                        // 1. şerit led sayısı 70 led
+#define NUMPIXELS2 50                        // 2. şerit led sayısı 50 led
+
+
+#define SD_ChipSelectPin 4                    // SD Kartın bağlı olduğu Pin
+
+#include <TMRpcm.h>                         // SD karttan okuma yapması için gereken Kütüphane
+TMRpcm tmrpcm;
+
+
+
+int RECV_PIN = 3;                             // Kızılötesi Alıcının Bağlı Olduğu Pin
+
+IRrecv irrecv(RECV_PIN); 
+decode_results results;
+
+ 
+Adafruit_NeoPixel NeoPixel1 = Adafruit_NeoPixel(NUMPIXELS1, PIN1, NEO_GRB + NEO_KHZ800);    // 1.Şerit Led Tanımlaması
+Adafruit_NeoPixel NeoPixel2 = Adafruit_NeoPixel(NUMPIXELS2, PIN2, NEO_GRB + NEO_KHZ800);    // 2.Şerit Led Tanımlaması
+
+
+
+
+#define BUTON0 16738455 // 0xFF6897 Reactor vessel Kırmızı(turuncu(sarı) karışımı başlangıç)(ses tanıtım) // Pressurizer Sarı Turuncu (ses tanıtım)
+#define BUTON1 16724175 // 0xFF30CF Steam Generator (Mavi) (ses tanıtım) // Turbine (Açık Mavi) (ses tanıtım) // Generator (Sarı/Beyaz)(ses tanıtım)
+#define BUTON2 16718055 // Condenser (Açık Mavi - Mavi) (ses tanıtım) // Soğutucu Pompa (Açık Mavi - Mavi) (ses tanıtım)
+#define BUTON3 16743045 // Elektrik Teller (Sarı/Beyaz)
+#define BUTON4 16716015 // Evler (Magenta ile sürekli yanacak, tüm sistem tamamlanmış olacak)
+#define BUTON5 16726215 // Kontrol Çubuğu (ses tanıtım)
+#define BUTON6 16734885 //
+#define BUTON7 16728765 // 
+#define BUTON8 16730805 // 
+#define BUTON9 16732845 // 
+
+void setup() {  
+                            
+  irrecv.enableIRIn();
+  tmrpcm.speakerPin = 9;                    // Hoparlör Çıkış Pini / Amfi ile desteklenmiştir, aksi takdirde istenilen sesi duyma şansı olmayacaktır. 
+
+  NeoPixel1.begin();                        // 1.şerit ledin başlatılması için 
+  NeoPixel1.show();
+  NeoPixel2.begin();
+  NeoPixel2.show();                         // 2.şerit ledin başlatılması için 
+  
+  
+  if (!SD.begin(SD_ChipSelectPin))          // SD Karttan gelen bilgileri okunuyor.
+{
+  return;
+
+}
+
+tmrpcm.volume(5);
+}
+  
+ 
+void loop() {
+
+  if (irrecv.decode(&results))                        // Kızıl ötesinden sinyal kontrolü gerçekleştirildi..
+  
+
+    {        
+      if (results.value == BUTON3)                  // Eğer 3 tuşundan gelen sinyal varsa bağlı olduğu ledler yanacaktır.
+                                                      // Jeneratör ve direklerin yanması için olan buton
+{
+        
+                         
+                                                      // ses dosyası .wav formatında ve SD Kart içerisine atılan dosya adı burada yazan ile aynı olmak zorundadır.
+                                                     // https://audio.online-convert.com/convert-to-wav  bu adresten mp3 formatındaki ses
+                                                     // dosyası wav formatına çevirildi. Aşağıda yazan ayarlar ses dosyasının düzenlenmesini sağlayacaktır.
+                                                     // 8 Bit / 16000 Hz  / mono 
+       
+    for (int i = 0; i <2; i++)                        //Alttaki döngüyü .... defa tekrarlayacak.
+  
+           {
+            for(int j = 0; j <= 70; j++)              
+            {
+                //if(j <= 9)
+              { 
+                if(j%5==0)
+           
+        NeoPixel1.setPixelColor(j,NeoPixel1.Color(246,231,23));    // 1. şerit led için ( Red, Green, Blue) gerekli renk tanımaları
+        NeoPixel1.setPixelColor(j,NeoPixel1.Color(247,240,129)); 
+        NeoPixel1.show();
+        delay(50);
+        NeoPixel1.setPixelColor(j,NeoPixel1.Color(247,240,129));
+        NeoPixel1.setPixelColor(j,NeoPixel1.Color(246,231,23));
+        NeoPixel1.show();
+        delay(50);
+         
+              }
+            }
+            
+            
+           }
+}
+           
+
+    
+
+     if (results.value == BUTON4)                   // Eğer 4 tuşundan gelen sinyal varsa bağlı olduğu ledler yanacaktır.
+                                                        // Evlerin yanması için gereken buton   
+          {
+            
+
+             for (int i = 0; i <2; i++)                        //Alttaki döngüyü .... defa tekrarlayacak.
+  
+           {
+            for(int j = 0; j <= 70; j++)              
+            {
+                //if(j <= 9)
+              { 
+                if(j%5==0)
+           
+        NeoPixel2.setPixelColor(j,NeoPixel2.Color(159,128,245));    // 1. şerit led için ( Red, Green, Blue) gerekli renk tanımaları
+        NeoPixel2.setPixelColor(j,NeoPixel2.Color(125,98,199)); 
+        NeoPixel2.show();
+        delay(50);
+        NeoPixel2.setPixelColor(j,NeoPixel2.Color(125,98,199));
+        NeoPixel2.setPixelColor(j,NeoPixel2.Color(159,128,245));
+        NeoPixel2.show();
+        delay(50);
+              }
+            }
+            
+           }
+  
+           }
+
+            if (results.value == BUTON0)                   // Eğer 0 tuşundan gelen sinyal varsa bağlı olduğu ledler yanacak
+                                                        // Reaktör kabı ve basınçlandırıcı  
+          {
+            tmrpcm.play("kab.wav");
+            delay(21500);
+            tmrpcm.play("bas.wav");
+  
+           }
+
+            if (results.value == BUTON2)                   // Eğer 2 tuşundan gelen sinyal varsa bağlı olduğu ledler yanacak
+                                                            //   
+          {
+            tmrpcm.play("yogus.wav");
+             delay(8500);
+             tmrpcm.play("pompa.wav");
+  
+           }
+
+           if (results.value == BUTON1)                   // Eğer 1 tuşundan gelen sinyal varsa bağlı olduğu metinler okunacaktır.
+                                                           // Burda buhar jeneratörü, türbin ve elektrik jeneratörünün metinleri bulunmaktadır.
+          {
+            tmrpcm.play("buhar.wav");
+            delay(24500);
+            tmrpcm.play("turbin.wav");
+            delay(11500);
+            tmrpcm.play("jene.wav");  
+            
+  
+           }
+
+             if (results.value == BUTON5)                   // Eğer 5 tuşundan gelen sinyal varsa kontrol çubuğunun metini okunacaktır.
+                                                             // Kontrol çubukları 
+          {
+            tmrpcm.play("kontrol.wav");
+  
+           }
+
+          
+            
+           
+          
+       irrecv.resume();
+  
+
+
+
+}
+}
